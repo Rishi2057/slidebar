@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 
-function App() {
+export function App() {
   const tabs = [
     "Salad",
     "Barnyard",
@@ -14,7 +14,7 @@ function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
 
-  // Auto scroll active tab into center
+  // Auto-scroll active tab into center
   useEffect(() => {
     const el = document.getElementById(`tab-${activeIndex}`);
     if (el) {
@@ -26,13 +26,17 @@ function App() {
     }
   }, [activeIndex]);
 
-  // SWIPE HANDLERS
+  // Swipe left/right only on tab strip
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if (activeIndex < tabs.length - 1) setActiveIndex(activeIndex + 1);
+      if (activeIndex < tabs.length - 1) {
+        setActiveIndex(activeIndex + 1);
+      }
     },
     onSwipedRight: () => {
-      if (activeIndex > 0) setActiveIndex(activeIndex - 1);
+      if (activeIndex > 0) {
+        setActiveIndex(activeIndex - 1);
+      }
     },
     trackMouse: true,
   });
@@ -41,7 +45,7 @@ function App() {
     <div style={{ fontFamily: "sans-serif", padding: 20 }}>
       <h2>Swipe Tabs Like WhatsApp</h2>
 
-      {/* Swipeable wrapper */}
+      {/* Swipeable Tab Strip */}
       <div
         {...handlers}
         ref={scrollRef}
@@ -53,6 +57,7 @@ function App() {
           padding: "12px 8px",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
+          touchAction: "pan-y", // IMPORTANT: enables horizontal swipe
         }}
       >
         {tabs.map((t, i) => (
@@ -64,11 +69,12 @@ function App() {
               flexShrink: 0,
               padding: "10px 20px",
               borderRadius: 30,
-              fontWeight: 600,
               whiteSpace: "nowrap",
+              fontWeight: 600,
               background: activeIndex === i ? "#25D366" : "#f2f2f2",
               color: activeIndex === i ? "white" : "#333",
               cursor: "pointer",
+              transition: "0.3s",
             }}
           >
             {t}
@@ -76,6 +82,7 @@ function App() {
         ))}
       </div>
 
+      {/* Hide scrollbar */}
       <style>
         {`
           .scroll-strip::-webkit-scrollbar {
@@ -84,6 +91,7 @@ function App() {
         `}
       </style>
 
+      {/* Content section */}
       <div
         style={{
           marginTop: 30,
@@ -93,9 +101,11 @@ function App() {
         }}
       >
         <h3>Selected: {tabs[activeIndex]}</h3>
+        <p>Swipe left or right on the tab strip to change tabs.</p>
       </div>
     </div>
   );
 }
+
 
 export default App;
